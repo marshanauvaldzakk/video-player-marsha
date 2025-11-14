@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemutar Multimedia - Kontrol Terpisah</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        /* Section Styling */
+        .section {
+            margin: 20px;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid;
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .audio-section {
+            border-color: #9b59b6;
+            background: linear-gradient(135deg, #f4ecf7, #e8daef);
+        }
+        
+        .audio-section .section-title {
+            color: #9b59b6;
+        }
+        
+        .video-section {
+            border-color: #3498db;
+            background: linear-gradient(135deg, #ebf5fb, #d6eaf8);
+        }
+        
+        .video-section .section-title {
+            color: #3498db;
+        }
+        
+        .control-section {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #fdedec, #fadbd8);
+        }
+        
+        .control-section .section-title {
+            color: #e74c3c;
+        }
+        
+        /* Button Styling */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .btn-audio {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+        
+        .btn-video {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        
+        .btn-control {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+        
+        .btn-stop {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .btn-pause {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        
+        /* Video Container */
+        .video-container {
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        video {
+            width: 100%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 3px solid #3498db;
+        }
+        
+        /* Volume Slider */
+        .volume-control {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .volume-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #7d3c98;
+        }
+        
+        .volume-slider {
+            width: 80%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        /* Status Panel */
+        .status-panel {
+            background: #e8f6f3;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #1abc9c;
+            text-align: center;
+            font-size: 1.1em;
+            color: #16a085;
+            font-weight: bold;
+        }
+        
+        /* Audio Options */
+        .audio-options {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .audio-option-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #e67e22, #d35400);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .section {
+                margin: 10px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PEMUTAR MULTIMEDIA - KONTROL TERPISAH</h1>
+            <p>Kontrol Background Music dan Video Secara Terpisah</p>
+        </div>
+        
+        <!-- Background Audio Section -->
+        <div class="section audio-section">
+            <div class="section-title">BACKGROUND MUSIC</div>
+            
+            <div class="btn-group">
+                <button class="btn-audio" onclick="playBackgroundAudio()">Putar Background Music</button>
+                <button class="btn-pause" onclick="pauseBackgroundAudio()">Jeda Background Music</button>
+                <button class="btn-stop" onclick="stopBackgroundAudio()">Hentikan Background Music</button>
+            </div>
+            
+            <div class="volume-control">
+                <label class="volume-label">Volume Background Music:</label>
+                <input type="range" min="0" max="100" value="50" class="volume-slider" id="backgroundVolume">
+            </div>
+        </div>
+        
+        <!-- Video Section -->
+        <div class="section video-section">
+            <div class="section-title">VIDEO PLAYER</div>
+            
+            <div class="video-container">
+                <video id="mainVideo" controls>
+                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                    Browser Anda tidak mendukung pemutar video.
+                </video>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn-video" onclick="playVideo()">Putar Video</button>
+                <button class="btn-pause" onclick="pauseVideo()">Jeda Video</button>
+                <button class="btn-stop" onclick="stopVideo()">Hentikan Video</button>
+            </div>
+            
+            <div class="audio-options">
+                <button class="audio-option-btn" onclick="playVideoWithAudio()">Video Dengan Suara</button>
+                <button class="audio-option-btn" onclick="playVideoWithoutAudio()">Video Tanpa Suara</button>
+            </div>
+        </div>
+        
+        <!-- Global Control Section -->
+        <div class="section control-section">
+            <div class="section-title">KONTROL SEMUA MEDIA</div>
+            
+            <div class="btn-group">
+                <button class="btn-control" onclick="playAllMedia()">Putar Semua Media</button>
+                <button class="btn-pause" onclick="pauseAllMedia()">Jeda Semua Media</button>
+                <button class="btn-stop" onclick="stopAllMedia()">Hentikan Semua Media</button>
+            </div>
+        </div>
+        
+        <!-- Status Panel -->
+        <div class="status-panel" id="statusPanel">
+            Status: Aplikasi siap digunakan
+        </div>
+    </div>
+
+    <!-- Background Audio Element -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <script>
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const mainVideo = document.getElementById('mainVideo');
+        const statusPanel = document.getElementById('statusPanel');
+        const volumeSlider = document.getElementById('backgroundVolume');
+        
+        let isBackgroundAudioPlaying = false;
+        let isVideoPlaying = false;
+        
+        // Update status display
+        function updateStatus(message, type = 'info') {
+            statusPanel.textContent = `Status: ${message}`;
+            
+            switch(type) {
+                case 'success':
+                    statusPanel.style.background = '#e8f6f3';
+                    statusPanel.style.borderLeftColor = '#1abc9c';
+                    statusPanel.style.color = '#16a085';
+                    break;
+                case 'warning':
+                    statusPanel.style.background = '#fff3cd';
+                    statusPanel.style.borderLeftColor = '#ffc107';
+                    statusPanel.style.color = '#856404';
+                    break;
+                case 'error':
+                    statusPanel.style.background = '#fde8e8';
+                    statusPanel.style.borderLeftColor = '#e74c3c';
+                    statusPanel.style.color = '#c0392b';
+                    break;
+                default:
+                    statusPanel.style.background = '#e3f2fd';
+                    statusPanel.style.borderLeftColor = '#2196F3';
+                    statusPanel.style.color = '#1976D2';
+            }
+        }
+        
+        // ==================== BACKGROUND AUDIO FUNCTIONS ====================
+        function playBackgroundAudio() {
+            try {
+                backgroundMusic.volume = volumeSlider.value / 100;
+                backgroundMusic.play();
+                isBackgroundAudioPlaying = true;
+                updateStatus('Background music diputar', 'success');
+            } catch (error) {
+                updateStatus('Error memutar background music', 'error');
+                console.error('Audio error:', error);
+            }
+        }
+        
+        function pauseBackgroundAudio() {
+            backgroundMusic.pause();
+            isBackgroundAudioPlaying = false;
+            updateStatus('Background music dijeda', 'warning');
+        }
+        
+        function stopBackgroundAudio() {
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
+            isBackgroundAudioPlaying = false;
+            updateStatus('Background music dihentikan', 'error');
+        }
+        
+        // Volume control
+        volumeSlider.addEventListener('input', function() {
+            backgroundMusic.volume = this.value / 100;
+            if (isBackgroundAudioPlaying) {
+                updateStatus(`Volume background music: ${this.value}%`, 'info');
+            }
+        });
+        
+        // ==================== VIDEO FUNCTIONS ====================
+        function playVideo() {
+            mainVideo.play();
+            isVideoPlaying = true;
+            updateStatus('Video diputar dengan suara', 'success');
+        }
+        
+        function playVideoWithAudio() {
+            mainVideo.volume = 1.0;
+            mainVideo.play();
+            isVideoPlaying = true;
+            updateStatus('Video diputar dengan suara', 'success');
+        }
+        
+        function playVideoWithoutAudio() {
+            mainVideo.volume = 0.0;
+            mainVideo.play();
+            isVideoPlaying = true;
+            updateStatus('Video diputar tanpa suara', 'success');
+        }
+        
+        function pauseVideo() {
+            mainVideo.pause();
+            isVideoPlaying = false;
+            updateStatus('Video dijeda', 'warning');
+        }
+        
+        function stopVideo() {
+            mainVideo.pause();
+            mainVideo.currentTime = 0;
+            isVideoPlaying = false;
+            updateStatus('Video dihentikan', 'error');
+        }
+        
+        // ==================== GLOBAL CONTROL FUNCTIONS ====================
+        function playAllMedia() {
+            playBackgroundAudio();
+            playVideoWithAudio();
+            updateStatus('Semua media diputar', 'success');
+        }
+        
+        function pauseAllMedia() {
+            pauseBackgroundAudio();
+            pauseVideo();
+            updateStatus('Semua media dijeda', 'warning');
+        }
+        
+        function stopAllMedia() {
+            stopBackgroundAudio();
+            stopVideo();
+            updateStatus('Semua media dihentikan', 'error');
+        }
+        
+        // ==================== EVENT LISTENERS ====================
+        mainVideo.addEventListener('play', function() {
+            isVideoPlaying = true;
+            updateStatus('Video sedang diputar', 'success');
+        });
+        
+        mainVideo.addEventListener('pause', function() {
+            isVideoPlaying = false;
+            updateStatus('Video dijeda', 'warning');
+        });
+        
+        mainVideo.addEventListener('ended', function() {
+            isVideoPlaying = false;
+            updateStatus('Video selesai diputar', 'info');
+        });
+        
+        backgroundMusic.addEventListener('play', function() {
+            isBackgroundAudioPlaying = true;
+        });
+        
+        backgroundMusic.addEventListener('pause', function() {
+            isBackgroundAudioPlaying = false;
+        });
+        
+        backgroundMusic.addEventListener('ended', function() {
+            isBackgroundAudioPlaying = false;
+        });
+        
+        // Auto-start background music when user interacts with page
+        document.addEventListener('click', function initAudio() {
+            backgroundMusic.volume = 0.3;
+            document.removeEventListener('click', initAudio);
+        });
+    </script>
+</body>
+</html>
